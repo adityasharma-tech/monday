@@ -5,14 +5,14 @@ import logging
 import argparse
 
 from google import genai
-from datetime import datetime
 from dotenv import load_dotenv
+from datetime import datetime
+from rich.style import Style as RichStyle
 from rich.console import Console
 from rich.markdown import Markdown
-from prompt_toolkit.styles import Style
-from rich.style import Style as RichStyle
-from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit import prompt, print_formatted_text
+from prompt_toolkit.styles import Style
+from prompt_toolkit.formatted_text import HTML
 
 
 class Friday:
