@@ -18,9 +18,9 @@ from prompt_toolkit import prompt, print_formatted_text
 class Friday:
     def __init__(self):
         art.tprint("FRIDAY")
-        self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        self.chat = client.chats.create(model="gemini-2.0-flash")
         self.console = Console()
+        client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+        self.chat = client.chats.create(model="gemini-2.0-flash")
         self.load_config()
         self.start_prompting()
 
@@ -48,10 +48,7 @@ class Friday:
 
     def get_response(self, message: str) -> str:
         try:
-            response = self.client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=message,
-            )
+            response = self.chat.send_message(message)
             return response.text
         except Exception as e:
             print("Error: \n")
