@@ -4,7 +4,7 @@ import json
 import logging
 import asyncio
 import argparse
-
+from config import config as mcp_config
 
 from google import genai
 from dotenv import load_dotenv
@@ -27,7 +27,7 @@ class Friday:
         self.session = PromptSession()
         self.load_config()
 
-        client = MCPClient.from_config_file(os.path.join(os.path.dirname(__file__), "mcp/config.json"))
+        client = MCPClient.from_dict(config=mcp_config)
         llm = ChatGoogleGenerativeAI(
             model="gemini-2.0-flash",
             temperature=0,
@@ -53,6 +53,9 @@ class Friday:
     async def start_prompting(self):
         while True:
             request = await self.get_prompt()
+            if request.replace(" ", "") == "":
+                self.print_result("Please provide a message")
+                continue
             if request == "exit":
                 break
             result = await self.get_response(request)
