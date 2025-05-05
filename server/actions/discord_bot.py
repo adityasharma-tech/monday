@@ -85,7 +85,7 @@ async def server_id(ctx):
 
 
 def start_flask():
-    app.run(port=5000)
+    app.run(port=7860)
 
 @bot.event
 async def on_ready():
