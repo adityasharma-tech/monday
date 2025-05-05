@@ -10,6 +10,13 @@
     "airbnb": {
       "command": "bunx",
       "args": ["-y", "@openbnb/mcp-server-airbnb", "--ignore-robots-txt"]
+    },
+    "discord": {
+      "command": "uv",
+      "args": ["--directory", "./mcp/mcp-discord", "run", "mcp-discord"],
+      "env": {
+        "DISCORD_TOKEN": "discord-bot-token"
+      }
     }
   }
 }
