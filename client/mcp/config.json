@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "bunx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {
+        "DISPLAY": ":1"
+      }
+    },
+    "airbnb": {
+      "command": "bunx",
+      "args": ["-y", "@openbnb/mcp-server-airbnb", "--ignore-robots-txt"]
+    }
+  }
+}

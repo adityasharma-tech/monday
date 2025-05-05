@@ -2,27 +2,42 @@ import os
 import art
 import json
 import logging
+import asyncio
 import argparse
+
 
 from google import genai
 from dotenv import load_dotenv
+from mcp_use import MCPAgent, MCPClient
 from datetime import datetime
 from rich.style import Style as RichStyle
 from rich.console import Console
 from rich.markdown import Markdown
 from prompt_toolkit import prompt, print_formatted_text
+from langchain_google_genai import ChatGoogleGenerativeAI
 from prompt_toolkit.styles import Style
 from prompt_toolkit.formatted_text import HTML
+from prompt_toolkit.shortcuts.prompt import PromptSession
 
 
 class Friday:
     def __init__(self):
         art.tprint("FRIDAY")
         self.console = Console()
-        client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        self.chat = client.chats.create(model="gemini-2.0-flash")
+        self.session = PromptSession()
         self.load_config()
-        self.start_prompting()
+
+        client = MCPClient.from_config_file(os.path.join(os.path.dirname(__file__), "mcp/config.json"))
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-2.0-flash",
+            temperature=0,
+            max_tokens=None,
+            timeout=None,
+            max_retries=2,
+            api_key=os.getenv("GOOGLE_API_KEY")
+        )
+
+        self.agent = MCPAgent(llm=llm, client=client, max_steps=30)
 
     def load_config(self):
         self.prompt_style = Style.from_dict({
@@ -35,21 +50,21 @@ class Friday:
         })
         self.prompt_text = HTML('<guide>guide</guide>  <tilde>~</tilde> ')
 
-    def start_prompting(self):
+    async def start_prompting(self):
         while True:
-            request = self.get_prompt()
+            request = await self.get_prompt()
             if request == "exit":
                 break
-            result = self.get_response(request)
+            result = await self.get_response(request)
             self.print_result(result)
 
-    def get_prompt(self):
-        return prompt(self.prompt_text, style=self.prompt_style)
+    async def get_prompt(self):
+        return await self.session.prompt_async(self.prompt_text, style=self.prompt_style)
 
-    def get_response(self, message: str) -> str:
+    async def get_response(self, message: str) -> str:
         try:
-            response = self.chat.send_message(message)
-            return response.text
+            response = await self.agent.run(message)
+            return response
         except Exception as e:
             print("Error: \n")
             print(e)
@@ -62,4 +77,5 @@ class Friday:
 
 if __name__ == "__main__":
     load_dotenv()
-    Friday()
+    agent = Friday()
+    asyncio.run(agent.start_prompting())
