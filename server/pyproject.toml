@@ -1,0 +1,13 @@
+[project]
+name = "server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "discord>=2.3.2",
+    "flask>=3.1.0",
+    "google-genai>=1.13.0",
+    "mcp[cli]>=1.7.1",
+    "requests>=2.32.3",
+]
